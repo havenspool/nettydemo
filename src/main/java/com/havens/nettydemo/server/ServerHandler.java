@@ -11,7 +11,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 /**
  * Created by havens on 15-8-7.
  */
-public class ServerHandler extends SimpleChannelInboundHandler<Object> {
+public class ServerHandler extends SimpleChannelInboundHandler<Message> {
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -33,7 +33,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
         channels.remove(ctx.channel());
     }
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object s) throws Exception { // (4)
+    protected void channelRead0(ChannelHandlerContext ctx, Message s) throws Exception { // (4)
         System.out.println("Client read:" + s + "channelsize:" + channels.size());
         Channel incoming = ctx.channel();
         for (Channel channel : channels) {

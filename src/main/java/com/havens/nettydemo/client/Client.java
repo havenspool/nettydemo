@@ -31,8 +31,9 @@ public class Client {
                 msg=new Message();
                 msg.cmd="time_check";
                 msg.data=new HashMap();
+                msg.put(msg.cmd,msg.data);
                 System.out.println(msg.toString());
-                channel.writeAndFlush(msg.toString());
+                channel.writeAndFlush(msg);
                 Thread.sleep(5000);
             }
         } catch (Exception e) {
