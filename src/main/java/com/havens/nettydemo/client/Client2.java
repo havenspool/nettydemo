@@ -1,21 +1,18 @@
 package com.havens.nettydemo.client;
 
-import com.havens.nettydemo.message.Message;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by havens on 15-8-7.
  */
-public class Client {
+public class Client2 {
     public void connect(int port, String host) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -24,15 +21,11 @@ public class Client {
                     .channel(NioSocketChannel.class)
                     .handler(new ClientChannelHaindler());
             Channel channel = bootstrap.connect(host, port).sync().channel();
-            Message msg=new Message();
-           // BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             while(true){
 //                channel.writeAndFlush((Object)(in.readLine() +"\r\n"));
-                msg=new Message();
-                msg.cmd="time_check";
-                msg.data=new HashMap();
-                System.out.println(msg.toString());
-                channel.writeAndFlush(msg.toString());
+                channel.writeAndFlush((Object)("hello,i`m client2!"));
                 Thread.sleep(5000);
             }
         } catch (Exception e) {
@@ -47,6 +40,6 @@ public class Client {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        new Client().connect(8090, "127.0.0.1");
+        new Client2().connect(8090, "127.0.0.1");
     }
 }

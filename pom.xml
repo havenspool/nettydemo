@@ -24,10 +24,20 @@
             <artifactId>json</artifactId>
             <version>20140107</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.netty</groupId>-->
+            <!--<artifactId>netty</artifactId>-->
+            <!--<version>5.0.0.Alpha2</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>5.0.0.Alpha2</version>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.24.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.0.0-alpha-3.1</version>
         </dependency>
     </dependencies>
 </project>
