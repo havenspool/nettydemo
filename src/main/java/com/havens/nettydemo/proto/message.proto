@@ -1,0 +1,7 @@
+option java_package = "com.havens.nettydemo.message";
+option java_outer_classname = "message";
+
+message Login {
+  required string cmd = 1;
+  required string data = 2;
+}
