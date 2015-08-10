@@ -1,5 +1,6 @@
 package com.havens.nettydemo.client;
 
+import com.havens.nettydemo.entity.User;
 import com.havens.nettydemo.message.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -24,16 +25,29 @@ public class Client {
                     .channel(NioSocketChannel.class)
                     .handler(new ClientChannelHaindler());
             Channel channel = bootstrap.connect(host, port).sync().channel();
-            Message msg=new Message();
            // BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            User user=new User();
+            user.id=10001;
+            user.name="havens";
+            user.pwd="123456";
+
+            Message msg = new Message();
+            msg.cmd = "time_check";
+            msg.data= new HashMap();
+            msg.put(msg.cmd, msg.data);
+
+            Message msg2 = new Message();
+            msg2.cmd = "login";
+            Map data2 = new HashMap();
+            data2.put("id",user.id);
+            data2.put("name",user.name);
+            data2.put("pwd",user.pwd);
+            msg2.data=data2;
+            msg2.put(msg2.cmd,msg2.data);
             while(true){
-//                channel.writeAndFlush((Object)(in.readLine() +"\r\n"));
-                msg=new Message();
-                msg.cmd="time_check";
-                msg.data=new HashMap();
-                msg.put(msg.cmd,msg.data);
-                System.out.println(msg.toString());
+//              channel.writeAndFlush((Object)(in.readLine() +"\r\n"));
                 channel.writeAndFlush(msg);
+                //channel.writeAndFlush(msg2);
                 Thread.sleep(5000);
             }
         } catch (Exception e) {

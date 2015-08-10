@@ -9,9 +9,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 /**
  * Created by havens on 15-8-7.
  */
-public class ClientHandler extends SimpleChannelInboundHandler<Message> {
+public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Message s) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object s) throws Exception {
         System.out.println("client receive from server:"+s);
     }
 }

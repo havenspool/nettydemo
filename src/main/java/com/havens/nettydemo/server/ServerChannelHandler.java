@@ -1,5 +1,7 @@
 package com.havens.nettydemo.server;
 
+import com.havens.nettydemo.codec.Amf3Decoder;
+import com.havens.nettydemo.codec.Amf3Encoder;
 import com.havens.nettydemo.codec.MessageDecoder;
 import com.havens.nettydemo.codec.MessageEncoder;
 import io.netty.channel.ChannelInitializer;
@@ -22,8 +24,12 @@ public class ServerChannelHandler extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
 //        ch.pipeline().addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        ch.pipeline().addLast("decoder", new MessageDecoder());
-        ch.pipeline().addLast("encoder", new MessageEncoder());
+//        ch.pipeline().addLast("decoder", new MessageDecoder());
+//        ch.pipeline().addLast("encoder", new MessageEncoder());
+        ch.pipeline().addLast("decoder", new Amf3Decoder());
+        ch.pipeline().addLast("encoder", new Amf3Encoder());
+//        ch.pipeline().addLast("decoder", new StringDecoder());
+//        ch.pipeline().addLast("encoder", new StringEncoder());
 //        //解码用
 //        ch.pipeline().addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
 //        //构造函数传递要解码成的类型

@@ -1,5 +1,6 @@
 package com.havens.nettydemo.server;
 
+import com.havens.nettydemo.entity.User;
 import com.havens.nettydemo.message.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,10 +9,13 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by havens on 15-8-7.
  */
-public class ServerHandler extends SimpleChannelInboundHandler<Message> {
+public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -33,14 +37,22 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
         channels.remove(ctx.channel());
     }
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Message s) throws Exception { // (4)
+    protected void channelRead0(ChannelHandlerContext ctx, Object s) throws Exception { // (4)
         System.out.println("Client read:" + s + "channelsize:" + channels.size());
         Channel incoming = ctx.channel();
         for (Channel channel : channels) {
             if (channel != incoming){
-                channel.writeAndFlush((Object)("[" + incoming.remoteAddress() + "]" + s));
+                channel.writeAndFlush("[" + incoming.remoteAddress() + "]" + s);
             } else {
-                channel.writeAndFlush((Object)("[you]" + s));
+                Message msg = new Message();
+                msg.cmd = "time_check";
+                Map data = new HashMap();
+                data.put("ctime",System.currentTimeMillis()/1000);
+                msg.data=data;
+                data.put(msg.cmd, msg.data);
+                //System.out.println(msg.toString());
+                channel.writeAndFlush(msg);
+                //channel.writeAndFlush((Object)("[you]" + s));
             }
         }
     }
