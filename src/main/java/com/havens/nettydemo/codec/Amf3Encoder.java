@@ -34,7 +34,7 @@ public class Amf3Encoder extends MessageToByteEncoder{
 //	}
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf buf) throws Exception {
-		System.out.println("encode:"+msg);
+		//System.out.println("encode:"+msg);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Amf3Output amf3Output = new Amf3Output(SerializationContext.getSerializationContext());
 		amf3Output.setOutputStream(out);
@@ -44,10 +44,10 @@ public class Amf3Encoder extends MessageToByteEncoder{
 		buf.clear();
 //		ByteBuf buf = ByteBuf.buffer(content.length+4);
 		buf.writeInt(content.length);
-		System.out.println("encode size:" + out.size());
+		//System.out.println("encode size:" + out.size());
 		buf.writeBytes(content);
 		amf3Output.flush();
 		amf3Output.close();
-		System.out.println("encode buf:" + buf.readableBytes());
+		//System.out.println("encode buf:" + buf.readableBytes());
 	}
 }

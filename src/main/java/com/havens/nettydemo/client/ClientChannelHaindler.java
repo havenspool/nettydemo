@@ -1,9 +1,6 @@
 package com.havens.nettydemo.client;
 
-import com.havens.nettydemo.codec.Amf3Decoder;
-import com.havens.nettydemo.codec.Amf3Encoder;
-import com.havens.nettydemo.codec.MessageDecoder;
-import com.havens.nettydemo.codec.MessageEncoder;
+import com.havens.nettydemo.codec.*;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -28,6 +25,8 @@ public class ClientChannelHaindler extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast("encoder", new Amf3Encoder());
 //        ch.pipeline().addLast("decoder", new StringDecoder());
 //        ch.pipeline().addLast("encoder", new StringEncoder());
+//        ch.pipeline().addLast("decoder", MarshallingCodeCFactory.buildMarshallingDecoder());
+//        ch.pipeline().addLast("encoder", MarshallingCodeCFactory.buildMarshallingEncoder());
 
         ch.pipeline().addLast("handler", new ClientHandler());
     }

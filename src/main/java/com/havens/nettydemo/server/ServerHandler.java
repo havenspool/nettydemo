@@ -1,7 +1,12 @@
 package com.havens.nettydemo.server;
 
+import com.havens.nettydemo.Service;
+import com.havens.nettydemo.entity.Hero;
 import com.havens.nettydemo.entity.User;
+import com.havens.nettydemo.job.LoginJob;
 import com.havens.nettydemo.message.Message;
+import com.havens.nettydemo.message.MessageHelper;
+import com.havens.nettydemo.service.TimeCheckService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -38,23 +43,29 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
     }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object s) throws Exception { // (4)
-        System.out.println("Client read:" + s + "channelsize:" + channels.size());
-        Channel incoming = ctx.channel();
-        for (Channel channel : channels) {
-            if (channel != incoming){
-                channel.writeAndFlush("[" + incoming.remoteAddress() + "]" + s);
-            } else {
-                Message msg = new Message();
-                msg.cmd = "time_check";
-                Map data = new HashMap();
-                data.put("ctime",System.currentTimeMillis()/1000);
-                msg.data=data;
-                data.put(msg.cmd, msg.data);
-                //System.out.println(msg.toString());
-                channel.writeAndFlush(msg);
-                //channel.writeAndFlush((Object)("[you]" + s));
-            }
+        Message msg=(Message)s;
+        if (msg == null) {
+            return;
         }
+        msg.channel=ctx.channel();
+        Service service=Server.service(msg.cmd);
+        service.setChannel(msg.channel);
+        service.filter(msg);
+
+//        msg.channel=ctx.channel();
+//        LoginJob.getInstance().put(msg);
+//        System.out.println("Client read:" + (Message) s + "channelsize:" + channels.size());
+
+//        System.out.println("Client read:" + (Message)s + "channelsize:" + channels.size());
+//        Channel incoming = ctx.channel();
+//        for (Channel channel : channels) {
+//            if (channel != incoming){
+//                channel.writeAndFlush("[" + incoming.remoteAddress() + "]" + s);
+//            } else {
+//                channel.writeAndFlush(MessageHelper.time_check());
+//                //channel.writeAndFlush((Object)("[you]" + s));
+//            }
+//        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.havens.nettydemo.client;
 
+import com.havens.nettydemo.entity.Hero;
 import com.havens.nettydemo.entity.User;
 import com.havens.nettydemo.message.Message;
 import io.netty.bootstrap.Bootstrap;
@@ -34,7 +35,6 @@ public class Client {
             Message msg = new Message();
             msg.cmd = "time_check";
             msg.data= new HashMap();
-            msg.put(msg.cmd, msg.data);
 
             Message msg2 = new Message();
             msg2.cmd = "login";
@@ -43,12 +43,14 @@ public class Client {
             data2.put("name",user.name);
             data2.put("pwd",user.pwd);
             msg2.data=data2;
-            msg2.put(msg2.cmd,msg2.data);
+
             while(true){
 //              channel.writeAndFlush((Object)(in.readLine() +"\r\n"));
+//                channel.writeAndFlush(msg);
+                channel.writeAndFlush(msg2);
                 channel.writeAndFlush(msg);
                 //channel.writeAndFlush(msg2);
-                Thread.sleep(5000);
+                Thread.sleep(10000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,6 +64,16 @@ public class Client {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        new Client().connect(8090, "127.0.0.1");
+        for(int i=0;i<1400;i++){
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        new Client().connect(8090, "127.0.0.1");
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 }

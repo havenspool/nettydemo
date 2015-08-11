@@ -27,11 +27,11 @@ public class Amf3Decoder extends ByteToMessageDecoder{
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		System.out.println("decode:" + in.readableBytes());
+		//System.out.println("decode:" + in.readableBytes());
 		if(in.readableBytes()>4){
 			in.markReaderIndex();
 			int needBytes = in.readInt();
-			System.out.println("needBytes:" + needBytes);
+			//System.out.println("needBytes:" + needBytes);
 			if(in.readableBytes()>=needBytes){
 				byte[] content = new byte[in.readableBytes()];
 				in.readBytes(content);
@@ -42,16 +42,9 @@ public class Amf3Decoder extends ByteToMessageDecoder{
 				Object decoded=amf3Input.readObject();
 				amf3Input.close();
 
-//				byte[] content = new byte[in.readableBytes()];
-//				in.readBytes(content);
-//				System.out.println("content:" + new String(content,"UTF-8"));
-//
-//				Amf3Input amf3Input = new Amf3Input(SerializationContext.getSerializationContext());
-//				amf3Input.setInputStream(new ByteArrayInputStream(content));
-//				Object decoded = amf3Input.readObject();
 				if (decoded != null) {
 					out.add(decoded);
-					System.out.println("decoded:" + decoded);
+					//System.out.println("decoded:" + decoded);
 				}
 			}else{
 				in.resetReaderIndex();

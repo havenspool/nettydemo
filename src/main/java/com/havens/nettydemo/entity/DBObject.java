@@ -1,14 +1,17 @@
 package com.havens.nettydemo.entity;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.collect.ImmutableMap;
+import org.json.JSONObject;
+
 /**
  * Created by havens on 15-8-10.
  */
-public class DBObject {
+public class DBObject extends JSONObject implements Serializable{
 
     public String toString() {
         return __getValueToString();

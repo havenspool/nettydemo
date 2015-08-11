@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server>
+    <instances>
+    </instances>
+
+    <services>
+        <service code="time_check">com.havens.nettydemo.service.TimeCheckService</service>
+        <service code="login">com.havens.nettydemo.service.LoginService</service>
+    </services>
+</server>
