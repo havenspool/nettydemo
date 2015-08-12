@@ -9,6 +9,7 @@ import java.util.Map;
  * Created by havens on 15-8-10.
  */
 public class User extends DBObject{
+    public String table_name="users";
     public int id;
     public String name;
     public String pwd;

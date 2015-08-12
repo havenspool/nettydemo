@@ -70,8 +70,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception { // (5)
-        Channel incoming = ctx.channel();
-        System.out.println("Client:"+incoming.remoteAddress()+"在线");
+//        Channel incoming = ctx.channel();
+//        System.out.println("Client:"+incoming.remoteAddress()+"在线");
     }
 
     @Override

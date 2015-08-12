@@ -6,12 +6,35 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.collect.ImmutableMap;
+import com.havens.nettydemo.db.DBObjectManager;
 import org.json.JSONObject;
 
 /**
  * Created by havens on 15-8-10.
  */
 public class DBObject extends JSONObject implements Serializable{
+
+    public String getTableName(){
+        Class clazz = getClass();
+        String tname = DBObjectManager.getTableNameByObject(clazz);
+        if (tname == null) {
+            try {
+                Field field = clazz.getField("table_name");
+                while (field == null && clazz.getSuperclass() != null) {
+                    clazz = clazz.getSuperclass();
+                    field = clazz.getField("table_name");
+                }
+                if (field == null) {
+                    tname = clazz.getSimpleName() + "s";
+                } else
+                    tname = (String) field.get(this);
+            } catch (Exception e) {
+                tname = clazz.getSimpleName() + "s";
+            }
+            DBObjectManager.setTableNameByClass(clazz, tname);
+        }
+        return tname;
+    }
 
     public String toString() {
         return __getValueToString();
@@ -77,5 +100,17 @@ public class DBObject extends JSONObject implements Serializable{
             }
             ObjectFieldCache.put(clazz, classMap.build());
         }
+    }
+
+    public Object getValueByField(String name) {
+        Field field = getAllFields().get(name);
+        if (field != null) {
+            try {
+                return field.get(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

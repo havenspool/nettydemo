@@ -8,9 +8,8 @@ import java.util.Map;
  */
 public class MessageHelper {
 
-    public static Message TIME_CHECK;
     public static Message time_check(){
-        TIME_CHECK=new Message();
+        Message TIME_CHECK=new Message();
         TIME_CHECK.cmd="time_check";
         TIME_CHECK.data=new HashMap();
         TIME_CHECK.data.put("ctime",System.currentTimeMillis()/1000);
@@ -26,6 +25,7 @@ public class MessageHelper {
             data2.put("name",msg.data.get("name"));
             data2.put("pwd",msg.data.get("pwd"));
         }
+        data2.put("result",true);
         msg2.data=data2;
         return msg2;
     }

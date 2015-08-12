@@ -3,6 +3,7 @@ package com.havens.nettydemo.codec;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import com.havens.nettydemo.utils.ZLipHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -32,22 +33,29 @@ public class Amf3Encoder extends MessageToByteEncoder{
 //		buf.writeBytes(content);
 //		return buf;
 //	}
+
+//	private static ByteArrayOutputStream out =null;
+//	private static Amf3Output amf3Output = null;
+
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf buf) throws Exception {
 		//System.out.println("encode:"+msg);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Amf3Output amf3Output = new Amf3Output(SerializationContext.getSerializationContext());
+//		out = new ByteArrayOutputStream();
+//		amf3Output=new Amf3Output(SerializationContext.getSerializationContext());
 		amf3Output.setOutputStream(out);
 		amf3Output.writeObject(msg);
 
-		byte[] content = out.toByteArray();
+		byte[] content =out.toByteArray();// ZLipHelper.compress(out.toByteArray());
 		buf.clear();
 //		ByteBuf buf = ByteBuf.buffer(content.length+4);
 		buf.writeInt(content.length);
 		//System.out.println("encode size:" + out.size());
 		buf.writeBytes(content);
 		amf3Output.flush();
-		amf3Output.close();
+//		amf3Output.close();
+
 		//System.out.println("encode buf:" + buf.readableBytes());
 	}
 }

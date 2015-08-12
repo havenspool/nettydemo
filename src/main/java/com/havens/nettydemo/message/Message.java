@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by havens on 15-8-7.
  */
-public class Message extends DBObject {
+public class Message implements Serializable {
     public int code;
     public String cmd;
     public Channel channel;
@@ -23,6 +23,8 @@ public class Message extends DBObject {
         msg.data= new HashMap();
         msg.data.put("ctime",System.currentTimeMillis()/1000);
         System.out.println(msg.data);
+
+        System.out.println(MessageHelper.time_check());
     }
 
 }

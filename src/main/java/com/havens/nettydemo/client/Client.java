@@ -43,14 +43,15 @@ public class Client {
             data2.put("name",user.name);
             data2.put("pwd",user.pwd);
             msg2.data=data2;
-
+//            channel.writeAndFlush(msg2);
+//            channel.writeAndFlush(msg);
             while(true){
 //              channel.writeAndFlush((Object)(in.readLine() +"\r\n"));
 //                channel.writeAndFlush(msg);
-                channel.writeAndFlush(msg2);
-                channel.writeAndFlush(msg);
+//                channel.writeAndFlush(msg2);
+//                channel.writeAndFlush(msg);
                 //channel.writeAndFlush(msg2);
-                Thread.sleep(10000);
+                Thread.sleep(15000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +65,8 @@ public class Client {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        for(int i=0;i<1400;i++){
+        //max 2500
+        for(int i=0;i<20;i++){
             new Thread(new Runnable() {
                 public void run() {
                     try {
