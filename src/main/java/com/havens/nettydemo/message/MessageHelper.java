@@ -1,5 +1,7 @@
 package com.havens.nettydemo.message;
 
+import com.havens.nettydemo.entity.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +18,14 @@ public class MessageHelper {
         return TIME_CHECK;
     }
 
-    public static Message login(Message msg){
+    public static Message login(User user){
         Message msg2 = new Message();
-        msg2.cmd = msg.cmd;
+        msg2.cmd ="login";
         Map data2 = new HashMap();
-        if(msg.data!=null){
-            data2.put("id",msg.data.get("id"));
-            data2.put("name",msg.data.get("name"));
-            data2.put("pwd",msg.data.get("pwd"));
+        if(user!=null){
+            data2.put("id",user.id);
+            data2.put("name",user.name);
+            data2.put("pwd",user.pwd);
         }
         data2.put("result",true);
         msg2.data=data2;

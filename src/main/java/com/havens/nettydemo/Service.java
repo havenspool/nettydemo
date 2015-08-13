@@ -4,6 +4,8 @@ import com.havens.nettydemo.server.Server;
 import io.netty.channel.Channel;
 
 import java.io.IOException;
+import java.util.Map;
+
 import com.havens.nettydemo.message.Message;
 
 /**
@@ -32,19 +34,22 @@ public abstract class Service {
     protected void write(Message msg) throws IOException {
         channel.writeAndFlush(msg);
     }
-    public final void service(final Message msg) throws Exception {
-        if (beforeFilter(msg)) {
-            filter(msg);
+    public final void service(final Map map) throws Exception {
+        if (beforeFilter(map)) {
+            filter(map);
             afterFilter();
         }
     }
 
-    public boolean beforeFilter(final Message msg) throws Exception {
+    public void create(Server server) throws Exception {
+    }
+
+    public boolean beforeFilter(final Map map) throws Exception {
         return true;
     }
 
     public void afterFilter() throws Exception {
     }
 
-    public abstract void filter(Message msg) throws Exception;
+    public abstract void filter(Map map) throws Exception;
 }

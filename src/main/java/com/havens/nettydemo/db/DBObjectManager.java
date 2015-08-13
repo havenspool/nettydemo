@@ -58,7 +58,6 @@ public class DBObjectManager {
         try {
             con = queryRunner.getDataSource().getConnection();
             for (String table : config.tableToClass.keySet()) {
-                System.out.println(table);
                 try {
                     String incrKey = null;
                     Set<String> keys = new HashSet<String>();

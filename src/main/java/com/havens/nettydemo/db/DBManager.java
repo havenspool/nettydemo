@@ -83,6 +83,48 @@ public class DBManager {
                 df.tableToKeyField = new HashMap<String, String>();
                 dataSources.put(name, df);
             }
+
+            Document objectXML = parseXML(DBOBJECT_CONF_FILE, false);
+
+            list = objectXML.getElementsByTagName("dbobject");
+
+            for (int i = 0; i < list.getLength(); i++) {
+                Element tE = (Element) list.item(i);
+                String tDatasource = tE.getAttribute("datasource");
+                if (tDatasource == null || tDatasource.length() < 1) {
+                    tDatasource = defaultName;
+                }
+                DataSourceConf df = dataSources.get(tDatasource);
+                NodeList subList = tE.getElementsByTagName("class_name");
+                if (subList.getLength() > 0) {
+                    String class_name = subList.item(0).getTextContent();
+                    NodeList subList2 = tE.getElementsByTagName("table_name");
+                    Element tableE = (Element) subList2.item(0);
+                    String tMark = tableE.getAttribute("mark");
+                    String table_name = tableE.getTextContent();
+                    df.tableToClass.put(table_name, class_name);
+                    if ("true".equals(tMark)) {
+                        df.classToTable.put(class_name, table_name);
+                    }
+
+                    NodeList subList3 = tE.getElementsByTagName("exclude_field");
+
+                    if (subList3.getLength() > 0) {
+                        String exclude_field = subList3.item(0).getTextContent();
+                        df.tableExcludes.put(table_name, exclude_field);
+                    } else {
+                        df.tableExcludes.put(table_name, "");
+                    }
+
+                    NodeList subList4 = tE.getElementsByTagName("cache_key");
+                    if (subList4.getLength() > 0) {
+                        String key_field = subList4.item(0).getTextContent();
+                        df.tableToKeyField.put(table_name, key_field);
+                    } else {
+                        df.tableToKeyField.put(table_name, DBConfig.DEFAULT_KEY_FIELD);
+                    }
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

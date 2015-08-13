@@ -69,10 +69,17 @@ public class Server implements Runnable{
             }
         }
     }
+
+    public void init(){
+
+    }
+
     public void run() {
         try {
             deployInstance();
             deployServices();
+
+            init();
 
             bind(8090);
         }catch (Exception e){

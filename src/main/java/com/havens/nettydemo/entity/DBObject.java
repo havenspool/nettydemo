@@ -3,10 +3,15 @@ package com.havens.nettydemo.entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Primitives;
 import com.havens.nettydemo.db.DBObjectManager;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -113,4 +118,116 @@ public class DBObject extends JSONObject implements Serializable{
         }
         return null;
     }
+
+    public void JsonToObj(JSONObject json) {
+        Map<String, Field> allFields = getAllFields();
+        for (Object attr : json.keySet()) {
+            Object value = json.opt((String) attr);
+            Field field = allFields.get(attr);
+            if (field != null
+                    && value != null) {
+                Class type = field.getType();
+                __setValueToObj(value, field, type);
+            }
+        }
+    }
+
+    public void MapToObj(Map<String, Object> map) {
+        Map<String, Field> allFields = getAllFields();
+        for (String fieldName : map.keySet()) {
+            Field field = allFields.get(fieldName);
+            Object value = map.get(fieldName);
+            if (field != null) {
+                Class type = field.getType();
+                __setValueToObj(value, field, type);
+            }
+        }
+    }
+
+    private void __setValueToObj(final Object value, final Field field, final Class type) {
+        try {
+            if (Boolean.TYPE == type) {
+                if (value instanceof Boolean) {
+                    field.setBoolean(this, (Boolean) value);
+                } else {
+                    int ivalue = value instanceof Number ? ((Number) value).intValue()
+                            : Integer.parseInt((String) value);
+                    field.setBoolean(this, ivalue == 1);
+                }
+            } else if (type.isPrimitive() || type.equals(String.class) || Primitives.isWrapperType(type)) {
+                field.set(this, value);
+            } else if (List.class.isAssignableFrom(type)) {
+                if (value instanceof JSONArray) {
+                    ParameterizedType listType = (ParameterizedType) field.getGenericType();
+                    Class<?> listClass = (Class<?>) listType.getActualTypeArguments()[0];
+                    if (DBObject.class.isAssignableFrom(listClass)) {
+                        List tmp = new ArrayList();
+                        JSONArray jsonArray = (JSONArray) value;
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Object o = listClass.newInstance();
+                            ((DBObject) o).JsonToObj(jsonArray.getJSONObject(i));
+                            tmp.add(o);
+                        }
+                        field.set(this, tmp);
+                    }
+                } else if (value instanceof List) {
+                    ParameterizedType listType = (ParameterizedType) field.getGenericType();
+                    Class<?> listClass = (Class<?>) listType.getActualTypeArguments()[0];
+                    List tmp = new ArrayList();
+                    if (DBObject.class.isAssignableFrom(listClass)) {
+                        List mapArray = (List) value;
+                        for (Object mapData : mapArray) {
+                            Object o = listClass.newInstance();
+                            ((DBObject) o).MapToObj((Map) mapData);
+                            tmp.add(o);
+                        }
+                    }
+                    field.set(this, tmp);
+                } else if (value instanceof Map[]) {
+                    ParameterizedType listType = (ParameterizedType) field.getGenericType();
+                    Class<?> listClass = (Class<?>) listType.getActualTypeArguments()[0];
+                    List tmp = new ArrayList();
+                    if (DBObject.class.isAssignableFrom(listClass)) {
+                        Map[] mapArray = (Map[]) value;
+                        for (int i = 0; i < mapArray.length; i++) {
+                            Object o = listClass.newInstance();
+                            ((DBObject) o).MapToObj(mapArray[i]);
+                            tmp.add(o);
+                        }
+                    }
+                    field.set(this, tmp);
+                }
+                //  for mongodb
+                //
+//                    else if (value instanceof BasicDBObject) {
+//                        Object o = type.newInstance();
+//                        ((DBObject) o).MapToObj((BasicDBObject) value);
+//                        field.set(obj, o);
+//                    }
+
+            } else if (DBObject.class.isAssignableFrom(type)) {
+                if (value instanceof JSONObject) {
+                    Object o = type.newInstance();
+                    ((DBObject) o).JsonToObj((JSONObject) value);
+                    field.set(this, o);
+                } else if (value instanceof String) {
+                    Object o = type.newInstance();
+                    ((DBObject) o).JsonToObj(new JSONObject((String) value));
+                    field.set(this, o);
+                } else if (value instanceof Map) {
+                    Object o = type.newInstance();
+                    ((DBObject) o).MapToObj((Map)value);
+                    field.set(this, o);
+                }
+            }
+//            else {
+//                field.set(this, value);
+//            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 }

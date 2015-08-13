@@ -20,7 +20,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Object> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception { // (5)
         Channel incoming = ctx.channel();
         User user=new User();
-        user.id=10001;
         user.name="havens";
         user.pwd="123456";
 

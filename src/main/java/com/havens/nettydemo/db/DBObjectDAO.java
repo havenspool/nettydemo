@@ -39,18 +39,55 @@ public class DBObjectDAO implements DAO{
     }
 
     public void update(DBObject obj, String table) throws DBException {
+        try {
+            Set<String> primary_keys = DBObjectManager.getTablePrimaryKey(table);
+            Set<String> columns = DBObjectManager.getTableAllColumnsNoKey(table);
+            Object[] objs = new Object[columns.size() + primary_keys.size()];
+            int count = 0;
+            for (String column : columns) {
+                objs[count] = obj.getValueByField(column);
+                count++;
+            }
 
+            for (String primary_key : primary_keys) {
+                objs[count] = obj.getValueByField(primary_key);
+                count++;
+            }
+            String sql = DBObjectManager.getUpdateSQLByTable(table);
+            int mount = innerRunner.update(sql, objs);
+            if (mount < 1) {
+//                System.err.println(map);
+//                System.err.println(DBObjectHelper.getTableAllColumns(table));
+                throw new SQLException("No data update." + sql + "\n" + obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DBException(e.getMessage());
+        }
     }
 
     public void delete(DBObject obj, String table) throws DBException {
-
+        try {
+            Set<String> primary_keys = DBObjectManager.getTablePrimaryKey(table);
+            Object[] objs = new Object[primary_keys.size()];
+            int count = 0;
+            for (String primary_key : primary_keys) {
+                objs[count] = obj.getValueByField(primary_key);
+                count++;
+            }
+            String sql = DBObjectManager.getDeleteSQLByTable(table);
+            int mount = innerRunner.update(sql, objs);
+            if (mount < 1) {
+                throw new SQLException("No data delete." + sql + "\n" + obj);
+            }
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
     }
 
     public void insert(DBObject obj, String table) throws DBException {
-        System.out.println(table);
         try {
             Field keyField = DBObjectManager.getInsertIncrKeyField(table);
-            System.out.println(keyField);
             Set<String> columns = DBObjectManager.getTableAllColumnsNoIncr(table); // true means if it is not auto increase then add key's column
             Object[] objs = new Object[columns.size()];
             int count = 0;
@@ -94,11 +131,14 @@ public class DBObjectDAO implements DAO{
 
     public static void main(String[] args) throws DBException{
         User user=new User();
-        user.id=10001;
         user.name="havens";
         user.pwd="123456";
 
         DBObjectDAO dao=new DBObjectDAO(DataSourceManager.getQueryRunner());
         dao.insert(user);
+//        user.id=1;
+//        user.pwd="654321";
+//        dao.update(user);
+//        dao.delete(user);
     }
 }

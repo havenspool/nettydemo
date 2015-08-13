@@ -44,13 +44,15 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object s) throws Exception { // (4)
         Message msg=(Message)s;
-        if (msg == null) {
+        if (msg == null||msg.data==null) {
             return;
         }
-        msg.channel=ctx.channel();
-        Service service=Server.service(msg.cmd);
-        service.setChannel(msg.channel);
-        service.filter(msg);
+        if(msg.data instanceof Map){
+            msg.channel=ctx.channel();
+            Service service=Server.service(msg.cmd);
+            service.setChannel(msg.channel);
+            service.filter(msg.data);
+        }
 
 //        msg.channel=ctx.channel();
 //        LoginJob.getInstance().put(msg);
