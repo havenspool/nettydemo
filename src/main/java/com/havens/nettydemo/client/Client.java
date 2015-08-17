@@ -66,7 +66,7 @@ public class Client {
      */
     public static void main(String[] args) throws Exception {
         //max 2500
-        for(int i=0;i<1000;i++){
+        for(int i=0;i<1;i++){
             new Thread(new Runnable() {
                 public void run() {
                     try {

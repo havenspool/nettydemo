@@ -17,7 +17,7 @@ public abstract class UserService extends Service{
     @Override
     public void create(Server server) throws Exception {
         super.create(server);
-        worldManager = WorldManager.getInstance();
+        worldManager = WorldManager.getInstance(server);
     }
 
     public boolean beforeFilter(final Map map) throws Exception {
