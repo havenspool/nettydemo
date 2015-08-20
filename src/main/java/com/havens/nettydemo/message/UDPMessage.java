@@ -19,6 +19,12 @@ public class UDPMessage {
         return packet;
     }
 
+    public static DatagramPacket send(Message msg,InetSocketAddress addr){
+        ByteBuf buf= Unpooled.copiedBuffer(Message.toByteArray(msg));
+        DatagramPacket packet=new DatagramPacket(buf,addr);
+        return packet;
+    }
+
     public static Message receive(DatagramPacket packet){
         ByteBuf buf = packet.copy().content();
         byte[] req = new byte[buf.readableBytes()];

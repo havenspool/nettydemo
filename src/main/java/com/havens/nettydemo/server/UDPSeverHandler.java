@@ -26,12 +26,13 @@ public class UDPSeverHandler extends SimpleChannelInboundHandler<DatagramPacket>
             return;
         }
 
-        if(msg.data instanceof Map){
-            msg.channel=ctx.channel();
-            Service service=Server.service(msg.cmd);
-            service.setChannel(msg.channel);
-            service.filter(msg.data);
-        }
+        ctx.channel().writeAndFlush(UDPMessage.send(msg,packet.sender()));
+//        if(msg.data instanceof Map){
+//            msg.channel=ctx.channel();
+//            Service service=Server.service(msg.cmd);
+//            service.setChannel(msg.channel);
+//            service.filter(msg.data);
+//        }
         System.out.println("UDPSeverHandler channelRead0:" + msg);
     }
 }
