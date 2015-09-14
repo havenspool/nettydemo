@@ -1,7 +1,5 @@
 package com.havens.nettydemo.db;
 
-import com.havens.nettydemo.server.Server;
-import com.havens.nettydemo.utils.FileHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,7 +13,7 @@ import java.util.Map;
  * Created by havens on 15-8-12.
  */
 public class DBManager {
-    private static final String DB_CONF_FILE = "db.xml";
+    private static final String DB_CONF_FILE = "rabbit.xml";
     private static final String DBOBJECT_CONF_FILE = "DBObject.xml";
 
     public static final DBConfig DB_CONFIG;
